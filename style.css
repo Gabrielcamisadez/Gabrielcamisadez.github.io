@@ -1,17 +1,17 @@
-/* Configurações Globais e Variáveis */
+/* Configurações Globais e Variáveis - Paleta Cyberpunk Dark Mode */
 :root {
-    --bg-color: #282c34;
-    --card-color: #3e4451;
-    --text-color: #abb2bf;
-    --accent-color: #61afef;
-    --header-color: #ffffff;
-    --scroll-bg-color: #1a1520; /* NOVO: Roxo muito escuro (quase preto) */
+    --bg-scroll-color: #1e1e24; /* Roxo escuro para o conteúdo rolável (quase preto) */
+    --card-color: #2b2b3a; /* Fundo dos cards (tom roxo-cinza) */
+    --text-color: #f0f0f0; /* Texto principal (branco/claro) */
+    --accent-color: #cc66ff; /* Magenta/Roxo vibrante para links/destaques */
+    --header-color: #ffffff; /* Títulos em branco */
+    --typing-cursor-color: #61afef; /* Azul de digitação (mantido para contraste) */
 }
 
 /* Estilos de Corpo e Fundo Fixo */
 body {
     font-family: 'Consolas', 'Menlo', monospace;
-    background-color: var(--bg-color);
+    background-color: var(--bg-scroll-color); /* Cor de fallback */
     color: var(--text-color);
     margin: 0;
     padding: 0;
@@ -19,33 +19,32 @@ body {
     scroll-behavior: smooth;
 
     /* IMPLEMENTAÇÃO DO FUNDO FIXO */
-    background-image: url('https://unsplash.com/photos/laptop-screen-displaying-code-with-coffee-mug-nwfWXz-JSWA'); /* **ATENÇÃO: Troque pelo link da sua imagem!** */
+    background-image: url('background.jpg'); /* **ATENÇÃO: Troque pelo NOME DO SEU ARQUIVO DE IMAGEM** */
     background-attachment: fixed;
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
+    /* Adiciona uma leve camada escura sobre a imagem para o texto se destacar */
+    background-blend-mode: darken;
 }
 
-/* Navegação */
+/* Navegação (Minimalista e Flutuante) */
 .navbar {
     position: fixed;
     top: 0;
-    left: 0;
-    width: 100%;
-    /* O navbar terá a cor sólida do scroll para se misturar */
-    background-color: var(--scroll-bg-color);
-    padding: 15px 0;
-    text-align: right;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    right: 0; /* Alinha à direita como no exemplo */
+    padding: 20px 30px;
+    background-color: transparent; /* Transparente sobre a imagem */
     z-index: 1000;
 }
 
 .navbar a {
     color: var(--text-color);
     text-decoration: none;
-    padding: 0 15px;
+    padding: 5px 10px;
     font-weight: bold;
     transition: color 0.3s;
+    text-transform: uppercase;
 }
 
 .navbar a:hover {
@@ -54,36 +53,35 @@ body {
 
 /* Seção de Destaque (Hero) */
 .hero-section {
-    /* ... (mantido) ... */
-    padding-top: 100px;
-    padding-bottom: 50px;
-    text-align: left;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding-left: 20px;
-    /* Torna o HERO transparente para mostrar a imagem de fundo */
-    background: transparent;
+    min-height: 100vh; /* Ocupa a altura total da tela */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center; /* Centraliza o texto */
+    background: rgba(0, 0, 0, 0.4); /* Leve sombra escura para ajudar a imagem a se destacar */
 }
 
 .hero-section h1 {
-    font-size: 3.5em;
+    font-size: 5em; /* Título bem maior */
     color: var(--header-color);
     margin-bottom: 0.1em;
+    text-shadow: 0 0 10px rgba(204, 102, 255, 0.6); /* Brilho neon sutil */
 }
 
 .hero-section .subtitle {
     font-size: 1.2em;
-    color: var(--accent-color);
+    color: var(--text-color);
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
 }
 
 /* Estilo para o Texto de Digitação */
 .typing-text {
-    font-size: 1.5em;
-    color: var(--header-color);
+    font-size: 1.8em;
+    color: var(--accent-color); /* Cor de destaque para o texto dinâmico */
     margin-top: 15px;
     font-weight: bold;
-    /* Efeito de cursor piscando */
-    border-right: 2px solid var(--accent-color);
+    border-right: 3px solid var(--accent-color);
     white-space: nowrap;
     overflow: hidden;
     animation: blink-caret .75s step-end infinite;
@@ -98,33 +96,22 @@ body {
 /* Layout Principal em Container e Cards */
 .container {
     max-width: 1000px;
-    margin: 20px auto;
-    padding: 20px;
+    margin: 0 auto;
+    padding: 40px 20px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
-    /* FUNDO SÓLIDO NAS SEÇÕES DE CONTEÚDO */
-    background-color: var(--scroll-bg-color);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
-    border-radius: 8px;
+    /* FUNDO SÓLIDO NAS SEÇÕES DE CONTEÚDO (Rola por cima da imagem) */
+    background-color: var(--bg-scroll-color);
+    box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.5); /* Sombra para destacar a transição */
 }
-
-/* Rodapé */
-footer {
-    text-align: center;
-    padding: 20px;
-    margin-top: 0; /* Remove a margem superior para se juntar ao container */
-    background-color: var(--scroll-bg-color); /* FUNDO SÓLIDO NO RODAPÉ */
-    color: var(--text-color);
-}
-/* ... (demais estilos de card e responsividade, etc.) ... */
-/* Mantendo o restante dos estilos originais abaixo */
 
 .card {
-    background-color: var(--card-color);
+    background-color: var(--card-color); /* Cor de fundo do card */
     padding: 25px;
-    border-radius: 8px;
+    border-radius: 6px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border-left: 3px solid var(--accent-color); /* Destaque lateral cyberpunk */
 }
 
 .card h2 {
@@ -134,63 +121,14 @@ footer {
     margin-top: 0;
     margin-bottom: 20px;
     font-size: 1.5em;
+    text-shadow: 0 0 5px rgba(204, 102, 255, 0.4);
 }
 
-.full-width {
-    grid-column: 1 / 3;
+/* Rodapé */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: var(--bg-scroll-color); /* FUNDO SÓLIDO NO RODAPÉ */
+    color: var(--text-color);
 }
-
-.project-item {
-    margin-bottom: 20px;
-    padding: 15px;
-    border-left: 3px solid var(--accent-color);
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-.project-item h3 {
-    color: var(--header-color);
-    margin-top: 0;
-}
-
-a {
-    color: var(--accent-color);
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-button {
-    background-color: var(--accent-color);
-    color: var(--bg-color);
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-top: 10px;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #79c0ff;
-}
-
-@media (max-width: 768px) {
-    .container {
-        grid-template-columns: 1fr;
-    }
-
-    .full-width {
-        grid-column: 1 / 1;
-    }
-
-    .hero-section h1 {
-        font-size: 2.5em;
-    }
-
-    .navbar {
-        text-align: center;
-    }
-}
+/* ... (Mantenha o restante dos estilos, como links, botões e media queries) ... */
