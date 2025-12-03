@@ -1,0 +1,10 @@
+title: Gabriel | Cybersecurity
+email: seuemail@email.com # Substitua
+description: >- # Sua descrição para SEO
+  Portfólio e Arquivos de Pesquisa em Cybersecurity.
+baseurl: "" # Vazio para sites de usuário (username.github.io)
+url: "https://gabrielcamisadez.github.io" # Substitua
+markdown: kramdown
+theme: minima # Pode ser removido, mas é um bom padrão
+plugins:
+  - jekyll-feed
