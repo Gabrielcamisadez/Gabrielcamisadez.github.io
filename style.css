@@ -1,21 +1,29 @@
 /* Configurações Globais e Variáveis */
 :root {
-    --bg-color: #282c34; /* Fundo principal escuro */
-    --card-color: #3e4451; /* Cor de fundo dos cards */
-    --text-color: #abb2bf; /* Cor do texto principal */
-    --accent-color: #61afef; /* Azul de destaque (links, etc.) */
-    --header-color: #ffffff; /* Cor de destaque (títulos) */
+    --bg-color: #282c34;
+    --card-color: #3e4451;
+    --text-color: #abb2bf;
+    --accent-color: #61afef;
+    --header-color: #ffffff;
+    --scroll-bg-color: #1a1520; /* NOVO: Roxo muito escuro (quase preto) */
 }
 
-/* Estilos de Corpo e Reset Básico */
+/* Estilos de Corpo e Fundo Fixo */
 body {
-    font-family: 'Consolas', 'Menlo', monospace; /* Fonte tech/clean */
+    font-family: 'Consolas', 'Menlo', monospace;
     background-color: var(--bg-color);
     color: var(--text-color);
     margin: 0;
     padding: 0;
     line-height: 1.6;
-    scroll-behavior: smooth; /* Rolagem suave ao clicar nos links */
+    scroll-behavior: smooth;
+
+    /* IMPLEMENTAÇÃO DO FUNDO FIXO */
+    background-image: url('https://unsplash.com/photos/laptop-screen-displaying-code-with-coffee-mug-nwfWXz-JSWA'); /* **ATENÇÃO: Troque pelo link da sua imagem!** */
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
 }
 
 /* Navegação */
@@ -24,10 +32,11 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    background-color: var(--card-color);
+    /* O navbar terá a cor sólida do scroll para se misturar */
+    background-color: var(--scroll-bg-color);
     padding: 15px 0;
     text-align: right;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     z-index: 1000;
 }
 
@@ -45,12 +54,15 @@ body {
 
 /* Seção de Destaque (Hero) */
 .hero-section {
-    padding-top: 100px; /* Espaço para a barra de navegação fixa */
+    /* ... (mantido) ... */
+    padding-top: 100px;
     padding-bottom: 50px;
     text-align: left;
     max-width: 1000px;
     margin: 0 auto;
     padding-left: 20px;
+    /* Torna o HERO transparente para mostrar a imagem de fundo */
+    background: transparent;
 }
 
 .hero-section h1 {
@@ -64,15 +76,49 @@ body {
     color: var(--accent-color);
 }
 
+/* Estilo para o Texto de Digitação */
+.typing-text {
+    font-size: 1.5em;
+    color: var(--header-color);
+    margin-top: 15px;
+    font-weight: bold;
+    /* Efeito de cursor piscando */
+    border-right: 2px solid var(--accent-color);
+    white-space: nowrap;
+    overflow: hidden;
+    animation: blink-caret .75s step-end infinite;
+    display: inline-block;
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: var(--accent-color); }
+}
+
 /* Layout Principal em Container e Cards */
 .container {
     max-width: 1000px;
     margin: 20px auto;
     padding: 20px;
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Duas colunas */
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
+    /* FUNDO SÓLIDO NAS SEÇÕES DE CONTEÚDO */
+    background-color: var(--scroll-bg-color);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
 }
+
+/* Rodapé */
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 0; /* Remove a margem superior para se juntar ao container */
+    background-color: var(--scroll-bg-color); /* FUNDO SÓLIDO NO RODAPÉ */
+    color: var(--text-color);
+}
+/* ... (demais estilos de card e responsividade, etc.) ... */
+/* Mantendo o restante dos estilos originais abaixo */
 
 .card {
     background-color: var(--card-color);
@@ -90,12 +136,10 @@ body {
     font-size: 1.5em;
 }
 
-/* Estilo para cards que ocupam a largura total (Ex: Projetos) */
 .full-width {
     grid-column: 1 / 3;
 }
 
-/* Estilo de Projetos */
 .project-item {
     margin-bottom: 20px;
     padding: 15px;
@@ -108,7 +152,6 @@ body {
     margin-top: 0;
 }
 
-/* Links e Botões */
 a {
     color: var(--accent-color);
     text-decoration: none;
@@ -131,22 +174,12 @@ button {
 }
 
 button:hover {
-    background-color: #79c0ff; /* Tom mais claro de azul */
+    background-color: #79c0ff;
 }
 
-/* Rodapé */
-footer {
-    text-align: center;
-    padding: 20px;
-    margin-top: 30px;
-    border-top: 1px solid var(--card-color);
-    color: var(--text-color);
-}
-
-/* Media Query para Responsividade (Telas menores) */
 @media (max-width: 768px) {
     .container {
-        grid-template-columns: 1fr; /* Uma coluna em telas pequenas */
+        grid-template-columns: 1fr;
     }
 
     .full-width {
