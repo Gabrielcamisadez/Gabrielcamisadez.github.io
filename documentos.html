@@ -1,0 +1,22 @@
+---
+title: Documentos
+layout: default
+---
+<main class="container">
+    <section class="content-section visible">
+        <h1 class="section-title">//: ls -l ./documentos</h1>
+        <div class="card">
+            {% if site.docs.size > 0 %}
+                <ul style="list-style: none; padding: 0;">
+                    {% for doc in site.docs %}
+                        <li style="margin-bottom: 1rem;">
+                            <a href="{{ doc.url | relative_url }}" class="nav-link" style="margin-left: 0;">» {{ doc.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Nenhum documento encontrado. Adicione arquivos .md à pasta `_docs`.</p>
+            {% endif %}
+        </div>
+    </section>
+</main>

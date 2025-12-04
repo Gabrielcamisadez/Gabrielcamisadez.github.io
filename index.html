@@ -1,59 +1,42 @@
 ---
+title: Portfolio
 layout: default
-title: Home
 ---
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <header class="navbar">
-        <a href="#about">About</a>
-        <a href="#skills">Skills</a>
-        <a href="https://github.com/gabrielcamisadez" target="_blank">GitHub</a>
-    </header>
-
-    <section id="hero" class="hero-section hero-centered">
-        <h1>GABRIEL</h1>
-        <p class="subtitle">Cybersecurity Professional | Ethical | Defender</p>
-        <p class="typing-text"></p>
+<main class="container">
+    <section id="hero" class="hero-section">
+        <h1 class="glitch" data-text="GABRIEL">GABRIEL</h1>
+        <p class="subtitle">
+            <span class="typing-text"></span><span class="cursor">|</span>
+        </p>
     </section>
 
-    <main class="container minimal-layout">
-
-        <div id="about" class="card single-column">
-            <h2>About Me</h2>
-            <p>Profissional focado em proteção de sistemas, análise de vulnerabilidades e resposta a incidentes.</p>
+    <section id="about" class="content-section">
+        <h2 class="section-title">§ boot_section("sobre_mim")</h2>
+        <div class="card">
+            <p>Estudante de Cibersegurança e profissional da área. Sou focado em aprender e aplicar meus conhecimentos em proteção de sistemas, análise de vulnerabilidades e resposta a incidentes.</p>
         </div>
+    </section>
 
-        <div id="skills" class="card single-column">
-            <h2>Skills</h2>
-            <ul>
+    <section id="skills" class="content-section">
+        <h2 class="section-title">//: load_skills.sh</h2>
+        <div class="card">
+            <ul class="skills-list">
                 <li>Linux</li>
                 <li>Análise de Vulnerabilidades</li>
-                <li>Resposta a Incidentes (Incident Response)</li>
+                <li>Resposta a Incidentes</li>
                 <li>Análise de Malware</li>
-                <li>**Linguagens:** Python, Shell Scripting</li>
-                <li>Hardening de Sistemas Linux</li>
+                <li>Python</li>
+                <li>Shell Scripting</li>
+                <li>Hardening de Sistemas</li>
             </ul>
         </div>
+    </section>
 
-        <div id="github-link" class="card single-column">
-            <h2>Research & Code</h2>
-            <p>Salvo alguns estudos em meu perfil -></p>
-            <a href="https://github.com/gabrielcamisadez" target="_blank" class="button-link-primary">Acessar GitHub &raquo;</a>
+    <section id="projects" class="content-section">
+        <h2 class="section-title">//: get_remote_repo.log</h2>
+        <div class="card">
+            <p>Meus estudos e projetos estão versionados no GitHub.</p>
+            <a href="https://github.com/gabrielcamisadez" target="_blank" class="button-link">exec ./access_github.sh</a>
         </div>
-
-    </main>
-
-    <footer>
-
-    </footer>
-
-    <script src="script.js"></script>
-</body>
-</html>
+    </section>
+</main>

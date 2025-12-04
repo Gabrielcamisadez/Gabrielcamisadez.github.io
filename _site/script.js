@@ -1,55 +1,70 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // --- 1. Lógica do Efeito de Digitação ---
-    const textElement = document.querySelector('.typing-text');
-    const textToType = "studying...";
-    let index = 0;
+document.addEventListener('DOMContentLoaded', function() {
+
+    // --- Typing Effect ---
+    const typingTextElement = document.querySelector('.typing-text');
+    const phrases = [
+        "Studying Cybersecurity...",
+        "Working as a Defender.",
+        "Studying Programming...",
+        "Analyzing Vulnerabilities.",
+        "Studying Networks...",
+        "Hardening Systems.",
+        "Studying Malware Analysis...",
+        "Scripting in Python."
+    ];
+    let phraseIndex = 0;
+    let charIndex = 0;
     let isDeleting = false;
-    let speed = 150;
 
-    function typeWriter() {
-        let currentText = textToType.substring(0, index);
-        textElement.textContent = currentText;
-
-        if (!isDeleting) {
-            // Modo de Digitação
-            index++;
-            if (index > textToType.length) {
-                isDeleting = true;
-                speed = 1000; // Pausa após digitar
+    function type() {
+        const currentPhrase = phrases[phraseIndex];
+        if (isDeleting) {
+            // Deleting
+            typingTextElement.textContent = currentPhrase.substring(0, charIndex - 1);
+            charIndex--;
+            if (charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
             }
         } else {
-            // Modo de Apagamento
-            index--;
-            speed = 70; // Velocidade de apagamento
-
-            if (index === 0) {
-                isDeleting = false;
-                speed = 500; // Pausa após apagar
+            // Typing
+            typingTextElement.textContent = currentPhrase.substring(0, charIndex + 1);
+            charIndex++;
+            if (charIndex === currentPhrase.length) {
+                isDeleting = true;
+                // Pause at the end of the phrase
+                setTimeout(type, 1500);
+                return;
             }
         }
-
-        setTimeout(typeWriter, speed);
+        // Speed of typing/deleting
+        const typeSpeed = isDeleting ? 50 : 120;
+        setTimeout(type, typeSpeed);
     }
 
-    // Inicia o efeito
-    typeWriter();
+    // --- Scroll Animation ---
+    const sections = document.querySelectorAll('.content-section');
 
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    };
 
-    // --- 2. Lógica da Rolagem Suave (Mantida) ---
-    const navLinks = document.querySelectorAll('.navbar a');
-
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            const targetId = link.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
-
-            if (targetSection) {
-                targetSection.scrollIntoView({
-                    behavior: 'smooth'
-                });
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                // Optional: unobserve after it's visible
+                // observer.unobserve(entry.target);
             }
         });
+    }, observerOptions);
+
+    sections.forEach(section => {
+        observer.observe(section);
     });
+
+    // Start the typing effect after a short delay
+    setTimeout(type, 500);
 });

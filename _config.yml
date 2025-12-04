@@ -8,3 +8,8 @@ markdown: kramdown
 theme: minima # Pode ser removido, mas é um bom padrão
 plugins:
   - jekyll-feed
+
+collections:
+  docs:
+    output: true
+    permalink: /documentos/:path/
