@@ -11,20 +11,22 @@
 </head>
 <body>
     <header class="navbar">
-        <div class="logo">gabriel:~/$</div>
+        <div class="logo">
+            <span style="color: var(--primary-color);">[</span>gabriel@portfolio<span style="color: var(--primary-color);">]</span><span style="color: var(--text-color);">:$ ~</span>
+        </div>
         <nav>
-            <a href="{{ "/" | relative_url }}#about" class="nav-link">cd ./sobre</a>
-            <a href="{{ "/" | relative_url }}#skills" class="nav-link">ls ./habilidades</a>
-            <a href="{{ "/" | relative_url }}#projects" class="nav-link">cat ./projetos.log</a>
-            <a href="{{ "/documentos.html" | relative_url }}" class="nav-link">ls ./documentos</a>
+            <a href="{{ "/" | relative_url }}#about" class="nav-link">[<span class="nav-text">sobre</span>]</a>
+            <a href="{{ "/" | relative_url }}#skills" class="nav-link">[<span class="nav-text">habilidades</span>]</a>
+            <a href="{{ "/" | relative_url }}#projects" class="nav-link">[<span class="nav-text">projetos</span>]</a>
+            <a href="{{ "/documentos.html" | relative_url }}" class="nav-link">[<span class="nav-text">documentos</span>]</a>
         </nav>
     </header>
 
     {{ content }}
 
     <footer class="footer">
-        <p>> [user@host ~]$ exit</p>
-        <p>> logout</p>
+        <p>> process_render(page) complete with status 0</p>
+        <p>> session.end</p>
     </footer>
 
     <script src="{{ "/script.js" | relative_url }}"></script>

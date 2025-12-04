@@ -1,9 +1,10 @@
 :root {
-    --background-color: #1A1A2E;
-    --primary-color: #BE93FD; /* Lighter Purple */
-    --text-color: #E0E0E0;
-    --subtle-border-color: rgba(190, 147, 253, 0.4);
-    --doc-card-background: #1E192B; /* Dark purple for doc background */
+    --background-color: #1A1B26;
+    --text-color: #C0CAF5;
+    --primary-color: #BB9AF7;   /* Purple */
+    --secondary-color: #7DCFFF; /* Cyan/Blue */
+    --border-color: rgba(187, 154, 247, 0.2);
+    --card-background: #24283B;
     --font-primary: 'Fira Code', monospace;
     --font-secondary: 'VT323', monospace;
 }
@@ -28,7 +29,7 @@ body {
     align-items: center;
     padding: 1.5rem 5%;
     background: var(--background-color);
-    border-bottom: 1px solid var(--subtle-border-color);
+    border-bottom: 1px solid var(--border-color);
     position: fixed;
     width: 100%;
     top: 0;
@@ -38,24 +39,42 @@ body {
 .logo {
     font-family: var(--font-secondary);
     font-size: 2rem;
+    color: var(--secondary-color);
+    transition: color 0.3s;
+}
+
+.logo:hover {
     color: var(--primary-color);
 }
 
 .nav-link {
-    color: var(--text-color);
     text-decoration: none;
     margin-left: 2rem;
     font-size: 1.1rem;
+    color: var(--text-color); /* For the brackets */
+}
+
+.nav-text {
     transition: color 0.3s;
 }
 
-.nav-link:hover {
-    color: var(--primary-color);
+/* Assign alternating colors */
+.nav-link:nth-child(odd) .nav-text {
+    color: var(--primary-color); /* Purple */
+}
+
+.nav-link:nth-child(even) .nav-text {
+    color: var(--secondary-color); /* Cyan */
+}
+
+/* Hover effect */
+.nav-link:hover .nav-text {
+    color: white;
 }
 
 .container {
     padding: 8rem 5% 2rem;
-    max-width: 1100px; /* Increased from 900px */
+    max-width: 1100px;
     margin: 0 auto;
 }
 
@@ -71,10 +90,10 @@ body {
 .glitch {
     font-family: var(--font-secondary);
     font-size: 6rem;
-    color: var(--text-color);
+    color: var(--primary-color);
     position: relative;
     display: inline-block;
-    text-shadow: 0 0 10px rgba(190, 147, 253, 0.5);
+    text-shadow: 0 0 5px var(--primary-color);
 }
 
 .subtitle {
@@ -85,13 +104,13 @@ body {
 }
 
 .cursor {
-    background-color: var(--primary-color);
+    background-color: var(--secondary-color);
     animation: blink 1s step-end infinite;
 }
 
 @keyframes blink {
     from, to { background-color: transparent }
-    50% { background-color: var(--primary-color); }
+    50% { background-color: var(--secondary-color); }
 }
 
 .content-section {
@@ -115,14 +134,36 @@ body {
 }
 
 .card {
-    background: transparent;
-    border: 1px solid var(--subtle-border-color);
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
     padding: 2rem;
+    position: relative;
 }
 
-/* Style for cards inside document articles */
+.card::before, .card::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    color: var(--secondary-color);
+}
+
+.card::before {
+    top: -1px;
+    left: -1px;
+    border-top: 2px solid;
+    border-left: 2px solid;
+}
+
+.card::after {
+    bottom: -1px;
+    right: -1px;
+    border-bottom: 2px solid;
+    border-right: 2px solid;
+}
+
 article .card {
-    background-color: var(--doc-card-background);
+    background-color: var(--card-background);
 }
 
 .skills-list {
@@ -147,22 +188,22 @@ article .card {
     margin-top: 1.5rem;
     padding: 0.8rem 1.5rem;
     background-color: transparent;
-    border: 1px solid var(--primary-color);
-    color: var(--primary-color);
+    border: 1px solid var(--secondary-color);
+    color: var(--secondary-color);
     text-decoration: none;
     font-weight: bold;
     transition: background-color 0.3s, color 0.3s;
 }
 
 .button-link:hover {
-    background-color: var(--primary-color);
+    background-color: var(--secondary-color);
     color: var(--background-color);
 }
 
 .footer {
     text-align: left;
     padding: 2rem 5%;
-    border-top: 1px solid var(--subtle-border-color);
+    border-top: 1px solid var(--border-color);
     font-family: var(--font-primary);
     font-size: 0.9rem;
     color: #888;
@@ -184,6 +225,6 @@ article .card {
     }
     .container {
         padding-top: 10rem;
-        max-width: 90%; /* Adjust for smaller screens */
+        max-width: 90%;
     }
 }
