@@ -1,3 +1,7 @@
+---
+title: commands
+layout: doc
+---
 
 # Table of Contents
 
